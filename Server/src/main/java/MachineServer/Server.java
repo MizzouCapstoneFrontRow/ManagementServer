@@ -29,10 +29,10 @@ public class Server {
 		} catch(SocketException e) {
 			Console.log("Socket closed, server exiting");
 		} catch(Exception e) {
-			System.out.println("An exception occurred while executing the Main thread:");
-			e.printStackTrace();
+			Console.log("An exception occurred while executing the Main thread:");
+			e.printStackTrace(console.out);
 		}
-		console.interrupt();
+		Console.stopLogging();
 	}
 	
 	public static void loop() throws IOException {

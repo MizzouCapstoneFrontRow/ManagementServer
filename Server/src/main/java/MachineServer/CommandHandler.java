@@ -29,7 +29,7 @@ public class CommandHandler {
 			for(Machine machine : Server.clients.values()) {
 				machine.shutdown();
 			}
-			Server.thread.interrupt();
+//			Server.thread.interrupt();
 			Server.socket.close();
 		} catch(Exception e) {
 			Console.log("An exception occurred during server shutdown");
