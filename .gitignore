@@ -1,5 +1,6 @@
-/target/
+Server/target/
 .idea
+Server/.idea
 *.ipr
 *.iws
 *.iml
