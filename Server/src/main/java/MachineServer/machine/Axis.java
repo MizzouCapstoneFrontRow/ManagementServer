@@ -1,4 +1,4 @@
-package MachineServer;
+package MachineServer.machine;
 
 enum AxisType {
 	ROTATIONAL, LINEAR

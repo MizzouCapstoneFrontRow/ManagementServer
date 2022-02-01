@@ -1,5 +1,7 @@
 package MachineServer;
 
+import MachineServer.machine.Machine;
+
 enum Command {
 	EXIT, LIST, NOP;
 }

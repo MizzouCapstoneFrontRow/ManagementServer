@@ -1,4 +1,4 @@
-package MachineServer;
+package MachineServer.machine;
 import java.util.LinkedHashMap;
 
 public class Function {

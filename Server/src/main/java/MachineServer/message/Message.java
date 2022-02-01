@@ -1,4 +1,7 @@
-package MachineServer;
+package MachineServer.message;
+
+import MachineServer.machine.Function;
+import MachineServer.Server;
 
 public class Message {
 	public Function function;

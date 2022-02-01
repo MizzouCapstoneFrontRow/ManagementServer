@@ -1,4 +1,7 @@
-package MachineServer;
+package MachineServer.machine;
+import MachineServer.message.Message;
+import MachineServer.Server;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -58,8 +61,8 @@ public class Machine extends Thread {
 			return false;
 		}
 	}
-	
-	protected void shutdown() throws IOException {
+
+	public void shutdown() throws IOException {
 		Server.clients.remove(ID);
 		socket.close();
 	}

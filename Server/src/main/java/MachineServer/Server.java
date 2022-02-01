@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.HashMap;
 
+import MachineServer.machine.Machine;
+import MachineServer.message.Message;
 import com.google.gson.Gson;
 
 public class Server {
