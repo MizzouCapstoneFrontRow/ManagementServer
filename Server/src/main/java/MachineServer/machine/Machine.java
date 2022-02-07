@@ -13,8 +13,8 @@ public class Machine extends Thread {
 	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
-	private String ID;
-	private Axis[] axes;
+	private String displayName;
+	private Feature[] features;
 	private Function[] functions;
 	
 	private Machine(Socket socket, InputStreamReader in, OutputStreamWriter out) {
@@ -63,13 +63,13 @@ public class Machine extends Thread {
 	}
 
 	public void shutdown() throws IOException {
-		Server.clients.remove(ID);
+		Server.clients.remove(displayName);
 		socket.close();
 	}
 	
 	@Override
 	public String toString() {
-		return ID;
+		return displayName;
 	}
 	
 	@Override

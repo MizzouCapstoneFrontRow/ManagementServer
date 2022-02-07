@@ -23,7 +23,7 @@ public class Server {
 		settings = SettingsManager.init();
 		try {
 			Console.log("Server starting up");
-			socket = new ServerSocket(settings.getInt("port"));
+			socket = new ServerSocket(settings.getInt("Machine-port"));
 			clients = new HashMap<String, Machine>();
 			json = new Gson();
 			thread = Thread.currentThread();

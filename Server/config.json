@@ -1,3 +1,5 @@
 {
-	"port": 6509
+	"Machine-port": 45575,
+	"Unity-port": 45576,
+	"Logging-TZ": ""
 }
