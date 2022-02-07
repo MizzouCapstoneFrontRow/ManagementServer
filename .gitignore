@@ -1,6 +1,8 @@
 Server/target/
+TestClient/target/
 .idea
 Server/.idea
+TestClient/.idea
 *.ipr
 *.iws
 *.iml

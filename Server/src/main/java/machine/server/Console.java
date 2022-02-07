@@ -95,7 +95,7 @@ public class Console extends Thread {
 	 * PrintStream. Will throw NullPointerException
 	 * if the Console has not yet been initialized.
 	 */
-	public static void log(String message) throws NullPointerException {
+	public static synchronized void log(String message) throws NullPointerException {
 		console.out.format("[%s] %s\n$ ", console.dateFormat.format(Date.from(Instant.now())), message);
 	}
 }

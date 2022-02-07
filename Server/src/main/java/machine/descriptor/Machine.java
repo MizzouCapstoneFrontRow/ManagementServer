@@ -1,4 +1,5 @@
 package machine.descriptor;
+import machine.server.Console;
 import machine.server.Server;
 import machine.transport.Message;
 
@@ -74,6 +75,7 @@ public class Machine extends Thread {
 	
 	@Override
 	public void run() {
+		Console.log("Instantiating Machine from Inbound Connection on Port #" + socket.getPort());
 		// TODO validation - assign machine ID and retrieve description from client
 		while(!socket.isClosed()) {
 			Message m = readMessage();
@@ -85,5 +87,6 @@ public class Machine extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Console.log("Terminating Machine Instance from Closed Connection on Port #" + socket.getPort());
 	}
 }
