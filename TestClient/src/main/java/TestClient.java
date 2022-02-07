@@ -1,6 +1,6 @@
 package main.java;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class TestClient {
@@ -13,7 +13,7 @@ public class TestClient {
         try {
             Thread.sleep(5000);
         } catch (Throwable ignored) {}
-        instance.close();
+        instance.disconnect();
     }
 
     Socket socket;
@@ -38,11 +38,25 @@ public class TestClient {
         System.out.printf("Connected to %s:%d.\n", host, port);
     }
 
+    public void disconnect() {
+        send("{\"message_id\": 0, \"message_type\": \"disconnect_machine\"}");
+        close();
+    }
+
     public void close() {
         try {
             socket.close();
         } catch (IOException exception) {
             System.err.println("[Error] Failed to Close Socket!");
+        }
+    }
+
+    public void send(String toSend) {
+        try {
+            new PrintWriter(socket.getOutputStream()).println(toSend);
+        } catch (IOException e) {
+            System.err.println("[Error] Failed to Write to Socket!");
+            e.printStackTrace();
         }
     }
 

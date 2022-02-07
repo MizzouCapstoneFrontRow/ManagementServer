@@ -45,12 +45,17 @@ public class Machine extends Thread {
 	
 	// Reads a Message object from the socket
 	public Message readMessage() {
+		Message toReturn;
 		try {
-			return Message.valueOf(read());
+			toReturn = Message.valueOf(read());
 		} catch(Exception e) {
 			e.printStackTrace();
-			return null;
+			toReturn = null;
 		}
+		if(toReturn == null) {
+			//Console.log("Failed to Read Message!");
+		}
+		return toReturn;
 	}
 	
 	// Writes a Message object to the socket
@@ -79,7 +84,12 @@ public class Machine extends Thread {
 		// TODO validation - assign machine ID and retrieve description from client
 		while(!socket.isClosed()) {
 			Message m = readMessage();
-			// TODO command handling
+			if(m != null) {
+				m.handle(this);
+				if (m.shouldForwardToUserEnvironments()) {
+					// TODO message passthrough
+				}
+			}
 		}
 		try {
 			socket.close();

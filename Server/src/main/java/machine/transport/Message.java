@@ -1,39 +1,41 @@
 package machine.transport;
 
-import machine.descriptor.Function;
+import machine.descriptor.Machine;
+import machine.server.Console;
 import machine.server.Server;
 
 public class Message {
-	public Function function;
-	public Object[] args;
-	public String content;
-	
-	public Message(String content, Function f, Object... args) {
-		this(f, args);
-		this.content = content;
-	}
-	
-	public Message(Function f, Object... args) {
-		this.function = f;
-		this.args = args;
-	}
-	
-	public Message(String content) {
-		this.function = null;
-		this.args = null;
-		this.content = content;
-	}
+
+	// Using snake case to match JSON encoding
+	public Integer message_id;
+	public String message_type;
 	
 	public static Message valueOf(String json) {
 		try {
-			return Server.json.fromJson(json, Message.class);
+			Message baseMessage = Server.json.fromJson(json, Message.class);
+			if(baseMessage != null && baseMessage.message_type != null) {
+				return Server.json.fromJson(json, MessageTypes.get(baseMessage.message_type));
+			}
+			return baseMessage;
 		} catch(Exception e) {
+			Console.log("Failed to Read Message!");
+			e.printStackTrace();
 			return null;
 		}
 	}
+
+	public boolean shouldForwardToUserEnvironments() {
+		return false;
+	}
+
+	/**
+	 * Performs local handling prior to passthrough, if applicable.
+	 */
+	public void handle(Machine connection) {}
 	
 	@Override
 	public String toString() {
 		return Server.json.toJson(this);
 	}
+
 }
