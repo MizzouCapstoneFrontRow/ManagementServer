@@ -1,7 +1,7 @@
-package MachineServer.message;
+package machine.transport;
 
-import MachineServer.machine.Function;
-import MachineServer.Server;
+import machine.descriptor.Function;
+import machine.server.Server;
 
 public class Message {
 	public Function function;

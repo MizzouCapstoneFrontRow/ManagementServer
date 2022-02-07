@@ -1,6 +1,6 @@
-package MachineServer.machine;
-import MachineServer.message.Message;
-import MachineServer.Server;
+package machine.descriptor;
+import machine.server.Server;
+import machine.transport.Message;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

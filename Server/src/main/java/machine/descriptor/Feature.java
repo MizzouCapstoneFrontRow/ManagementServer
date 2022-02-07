@@ -1,4 +1,4 @@
-package MachineServer.machine;
+package machine.descriptor;
 
 public abstract class Feature {
 	protected String name;

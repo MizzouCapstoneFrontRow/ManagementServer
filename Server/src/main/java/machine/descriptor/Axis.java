@@ -1,4 +1,4 @@
-package MachineServer.machine;
+package machine.descriptor;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

@@ -1,12 +1,13 @@
-package MachineServer;
+package machine.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.HashMap;
 
-import MachineServer.machine.Machine;
-import MachineServer.message.Message;
+import machine.descriptor.Machine;
+import machine.transport.Message;
+
 import com.google.gson.Gson;
 
 public class Server {

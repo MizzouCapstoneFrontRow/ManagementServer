@@ -1,6 +1,6 @@
-package MachineServer;
+package machine.server;
 
-import MachineServer.machine.Machine;
+import machine.descriptor.Machine;
 
 enum Command {
 	EXIT, LIST, NOP;

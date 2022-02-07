@@ -1,4 +1,4 @@
-package MachineServer;
+package machine.server;
 
 import java.io.FileReader;
 import java.io.FileWriter;
