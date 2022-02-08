@@ -2,28 +2,49 @@ package main.java;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 public class TestClient {
 
     public static void main(String[] args) {
-        String host = "localhost";
-        int port = 45575;
+
+        // Config
+        final String host = "localhost";
+        final int port = 45575;
+
+        // Connect
         TestClient instance = new TestClient(host, port);
         instance.connect();
-        try {
-            Thread.sleep(5000);
-        } catch (Throwable ignored) {}
+
+        // Main Loop
+        boolean shouldEnd = false;
+        while(!shouldEnd) {
+            try {
+                String userInput = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+                StringTokenizer tokenizer = new StringTokenizer(userInput);
+                String command = tokenizer.nextToken();
+                switch(command) {
+                    case "disconnect":
+                        shouldEnd = true;
+                        break;
+                    default:
+                        System.out.printf("Invalid Command: \"%s\"\n", command);
+                }
+            } catch (Throwable t) {
+                System.out.println("Error: Encountered Exception while Parsing Command!");
+            }
+        }
+
+        // Disconnect
         instance.disconnect();
         System.out.println("Sent disconnect packet!");
-        try {
-            Thread.sleep(5000);
-        } catch (Throwable ignored) {}
         instance.close();
+
     }
 
     Socket socket;
-    String host;
-    int port;
+    final String host;
+    final int port;
 
     PrintWriter socketOutputStreamWriter;
 
