@@ -14,11 +14,18 @@ public class TestClient {
             Thread.sleep(5000);
         } catch (Throwable ignored) {}
         instance.disconnect();
+        System.out.println("Sent disconnect packet!");
+        try {
+            Thread.sleep(5000);
+        } catch (Throwable ignored) {}
+        instance.close();
     }
 
     Socket socket;
     String host;
     int port;
+
+    PrintWriter socketOutputStreamWriter;
 
     public TestClient(String host, int port) {
         this.host = host;
@@ -30,6 +37,7 @@ public class TestClient {
         while(!connected) {
             try {
                 socket = new Socket(host, port);
+                socketOutputStreamWriter = new PrintWriter(socket.getOutputStream(), true);
                 connected = true;
             } catch (IOException exception) {
                 System.err.printf("[Error] Failed to connect to %s:%d, trying again in 5 seconds...\n", host, port);
@@ -40,7 +48,6 @@ public class TestClient {
 
     public void disconnect() {
         send("{\"message_id\": 0, \"message_type\": \"disconnect_machine\"}");
-        close();
     }
 
     public void close() {
@@ -52,12 +59,7 @@ public class TestClient {
     }
 
     public void send(String toSend) {
-        try {
-            new PrintWriter(socket.getOutputStream()).println(toSend);
-        } catch (IOException e) {
-            System.err.println("[Error] Failed to Write to Socket!");
-            e.printStackTrace();
-        }
+        socketOutputStreamWriter.println(toSend);
     }
 
 }
