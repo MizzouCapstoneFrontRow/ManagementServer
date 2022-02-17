@@ -2,6 +2,8 @@ package main.java;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.StringTokenizer;
 
 public class TestClient {
@@ -27,11 +29,22 @@ public class TestClient {
                     case "disconnect":
                         shouldEnd = true;
                         break;
+                    case "send":
+                        if(tokenizer.countTokens() >=1) {
+                            StringBuilder message = new StringBuilder();
+                            Files.lines(Paths.get(tokenizer.nextToken())).forEach(message::append);
+                            instance.send(message.toString());
+                        }
+                        else {
+                            System.out.printf("Invalid parameters for command \"%s\"\n");
+                        }
+                        break;
                     default:
                         System.out.printf("Invalid Command: \"%s\"\n", command);
                 }
             } catch (Throwable t) {
                 System.out.println("Error: Encountered Exception while Parsing Command!");
+                t.printStackTrace();
             }
         }
 
