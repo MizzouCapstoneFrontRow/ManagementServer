@@ -21,7 +21,6 @@ public class MessageTypes {
     static {
         register("disconnect_machine", MessageDisconnectMachine.class);
         register("heartbeat", MessageHeartbeat.class);
-        register("machine_descriptor", MessageMachineDescriptor.class);
     }
 
 }
