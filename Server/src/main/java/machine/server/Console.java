@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Scanner;
 
+import machine.transport.Command;
+
 public class Console extends Thread {
 	PrintStream out;
 	InputStream in;
@@ -35,7 +37,7 @@ public class Console extends Thread {
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		thread = currentThread();
 	}
-	
+	/*
 	@Override
 	public void run() {
 		BufferedReader in = new BufferedReader(new InputStreamReader(this.in));
@@ -55,7 +57,7 @@ public class Console extends Thread {
 			out.close();
 		}
 		console = null;
-	}
+	} */
 	
 	public static Console startLogging() {
 		console = new Console();

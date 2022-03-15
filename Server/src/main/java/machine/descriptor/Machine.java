@@ -1,7 +1,9 @@
 package machine.descriptor;
+
 import machine.server.Console;
 import machine.server.Server;
 import machine.transport.Message;
+import machine.transport.Messenger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,13 +12,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class Machine extends Thread {
+public class Machine extends Thread implements Messenger {
 	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String displayName;
 	private Feature[] features;
 	private Function[] functions;
+	
+	private Machine() {
+		
+	}
 	
 	private Machine(Socket socket, InputStreamReader in, OutputStreamWriter out) {
 		this.socket = socket;
@@ -26,9 +32,16 @@ public class Machine extends Thread {
 	
 	public static Machine valueOf(Socket socket) throws IOException {
 		InputStreamReader in = new InputStreamReader(socket.getInputStream());
+		BufferedReader temp = new BufferedReader(in);
 		OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
 		
-		return new Machine(socket, in, out);
+		Machine m = Server.json.fromJson(temp.readLine(), Machine.class);
+		
+		m.in = temp;
+		m.out = new BufferedWriter(out);
+		m.socket = socket;
+		
+		return m;
 	}
 	
 	// Reads a line of input from the socket
@@ -81,8 +94,11 @@ public class Machine extends Thread {
 	@Override
 	public void run() {
 		Console.log("Instantiating Machine from Inbound Connection on Port #" + socket.getPort());
+		
+		Server.clients.put(displayName, this);
+		
 		// TODO validation - assign machine ID and retrieve description from client
-		while(!socket.isClosed()) {
+		while(isReady()) {
 			Message m = readMessage();
 			if(m != null) {
 				m.handle(this);
@@ -99,4 +115,38 @@ public class Machine extends Thread {
 		}
 		Console.log("Terminating Machine Instance from Closed Connection on Port #" + socket.getPort());
 	}
+
+	@Override
+	public Boolean isReady() {
+		return !socket.isClosed();
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

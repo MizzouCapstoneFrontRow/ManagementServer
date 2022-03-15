@@ -8,9 +8,19 @@ public class Message {
 
 	// Using snake case to match JSON encoding
 	public Integer message_id;
-	public String message_type;
+	public Command command;
+	
 	
 	public static Message valueOf(String json) {
+		try {
+			return Server.json.fromJson(json, Message.class);
+		} catch(Exception e) {
+			Console.log("Failed to Read Message!");
+			e.printStackTrace();
+			return null;
+		}
+		
+		/*
 		try {
 			Message baseMessage = Server.json.fromJson(json, Message.class);
 			if(baseMessage != null && baseMessage.message_type != null) {
@@ -18,10 +28,8 @@ public class Message {
 			}
 			return baseMessage;
 		} catch(Exception e) {
-			Console.log("Failed to Read Message!");
-			e.printStackTrace();
-			return null;
-		}
+
+		} */
 	}
 
 	public boolean shouldForwardToUserEnvironments() {

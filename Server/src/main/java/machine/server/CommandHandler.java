@@ -1,10 +1,10 @@
 package machine.server;
 
-import machine.descriptor.Machine;
+import java.util.function.BiConsumer;
 
-enum Command {
-	EXIT, LIST, NOP;
-}
+import machine.descriptor.Machine;
+import machine.transport.Message;
+import machine.transport.Messenger;
 
 public class CommandHandler {
 	
@@ -12,6 +12,7 @@ public class CommandHandler {
 	 * Command value associated with the given input,
 	 * or Command.NOP if no matching command was found.
 	 */
+	/*
 	public static Command execute(String input) {
 		String[] args = input.split(" ");
 		if(args.length == 0) {
@@ -27,16 +28,8 @@ public class CommandHandler {
 	}
 	
 	private static Command exit() {
-		try {
-			for(Machine machine : Server.clients.values()) {
-				machine.shutdown();
-			}
-//			Server.thread.interrupt();
-			Server.socket.close();
-		} catch(Exception e) {
-			Console.log("An exception occurred during server shutdown");
-			e.printStackTrace(Console.out());
-		}
+
 		return Command.EXIT;
 	}
+	*/
 }
