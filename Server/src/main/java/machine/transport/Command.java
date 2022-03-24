@@ -7,7 +7,7 @@ import machine.server.Console;
 import machine.server.Server;
 
 public enum Command {
-	EXIT((messenger, message) -> {
+	exit((messenger, message) -> {
 		try {
 			for(Machine machine : Server.clients.values()) {
 				machine.shutdown();
@@ -17,9 +17,11 @@ public enum Command {
 			Console.log("An exception occurred during server shutdown");
 			e.printStackTrace(Console.out());
 		}
-	}), LIST((messenger, message) -> {
+	}), list((messenger, message) -> {
 		
-	}), NOP(null);
+	}), machine_description((messenger, message) -> {
+		
+	}),	n_op(null);
 	
 	private BiConsumer<Messenger, Message> action;
 	

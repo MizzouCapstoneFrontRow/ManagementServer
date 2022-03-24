@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 public class Server {
 	public static ServerSocket socket;
 	public static HashMap<String, Machine> clients;
-	public static HashMap<String, Message> queue;
+	public static UnityListener unity;
 	public static Gson json;
 	public static SettingsManager settings;
 	public static Console console;
@@ -27,7 +27,7 @@ public class Server {
 			Console.log("Server starting up");
 			socket = new ServerSocket(settings.getInt("Machine-port"));
 			clients = new HashMap<String, Machine>();
-			queue = new HashMap<String, Message>();
+			unity = new UnityListener();
 			json = new Gson();
 			thread = Thread.currentThread();
 			loop();

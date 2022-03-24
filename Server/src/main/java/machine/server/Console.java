@@ -100,4 +100,8 @@ public class Console extends Thread {
 	public static synchronized void log(String message) throws NullPointerException {
 		console.out.format("[%s] %s\n$ ", console.dateFormat.format(Date.from(Instant.now())), message);
 	}
+	
+	public static void format(String format, Object... args) {
+		log(String.format(format, args));
+	}
 }

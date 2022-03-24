@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
+@SuppressWarnings("unused")
 public class Machine extends Thread implements Messenger {
 	private Socket socket;
 	private BufferedReader in;
@@ -20,11 +23,14 @@ public class Machine extends Thread implements Messenger {
 	private Feature[] features;
 	private Function[] functions;
 	
+	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
+	
 	private Machine() {
-		
+		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
 	
 	private Machine(Socket socket, InputStreamReader in, OutputStreamWriter out) {
+		this();
 		this.socket = socket;
 		this.in = new BufferedReader(in);
 		this.out = new BufferedWriter(out);
@@ -56,19 +62,22 @@ public class Machine extends Thread implements Messenger {
 		out.flush();
 	}
 	
+	private Boolean react(Message m) {
+		if(listeners.containsKey(m.message_id)) {
+			var actor = listeners.remove(m.message_id);
+			actor.accept(this, m);
+			return true;
+		}
+		return false;
+	}
+	
 	// Reads a Message object from the socket
 	public Message readMessage() {
-		Message toReturn;
 		try {
-			toReturn = Message.valueOf(read());
-		} catch(Exception e) {
-			e.printStackTrace();
-			toReturn = null;
+			return Message.valueOf(read());
+		} catch (IOException e) {
+			return null;
 		}
-		if(toReturn == null) {
-			//Console.log("Failed to Read Message!");
-		}
-		return toReturn;
 	}
 	
 	// Writes a Message object to the socket
@@ -84,6 +93,7 @@ public class Machine extends Thread implements Messenger {
 	public void shutdown() throws IOException {
 		Server.clients.remove(displayName);
 		socket.close();
+		Console.format("Machine %s has disconnected", getName());
 	}
 	
 	@Override
@@ -92,33 +102,34 @@ public class Machine extends Thread implements Messenger {
 	}
 	
 	@Override
-	public void run() {
-		Console.log("Instantiating Machine from Inbound Connection on Port #" + socket.getPort());
-		
+	public void run() {		
 		Server.clients.put(displayName, this);
+		Console.format("Machine %s has connected", getName());
 		
-		// TODO validation - assign machine ID and retrieve description from client
 		while(isReady()) {
 			Message m = readMessage();
-			if(m != null) {
-				m.handle(this);
-				if (m.shouldForwardToUserEnvironments()) {
-					// TODO message passthrough
-				}
+			if(m == null) {
+				break;
+			} else if(!react(m)) {
+				m.invoke(this);
 			}
 		}
 		try {
-			socket.close();
+			shutdown();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Console.log("Error while shutting down machine connection");
 			e.printStackTrace();
 		}
-		Console.log("Terminating Machine Instance from Closed Connection on Port #" + socket.getPort());
 	}
 
 	@Override
 	public Boolean isReady() {
 		return !socket.isClosed();
+	}
+
+	@Override
+	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react) {
+		listeners.put(messageID, react);
 	}
 }
 

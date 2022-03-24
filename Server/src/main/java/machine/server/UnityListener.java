@@ -7,18 +7,24 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 import machine.transport.Message;
 import machine.transport.Messenger;
 
+@SuppressWarnings("unused")
 public class UnityListener extends Thread implements Messenger {
 	ServerSocket socket;
 	Socket connection;
 	BufferedReader in;
 	BufferedWriter out;
 	
+	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
+	
 	public UnityListener() throws IOException {
 		socket = new ServerSocket(Server.settings.getInt("Unity-port"));
+		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
 	
 	@Override
@@ -31,10 +37,14 @@ public class UnityListener extends Thread implements Messenger {
 				
 				while(isReady()) {
 					Message m = readMessage();
+					if(m == null) {
+						break;
+					} else if(!react(m)) {
+						m.invoke(this);
+					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Console.log("Unity connection closed");
 			}
 		}
 	}
@@ -80,4 +90,53 @@ public class UnityListener extends Thread implements Messenger {
 	public Boolean isReady() {
 		return connection != null && !connection.isClosed();
 	}
+
+	@Override
+	public void shutdown() throws IOException {
+		socket.close();
+		connection.close();
+	}
+	
+	private Boolean react(Message m) {
+		if(listeners.containsKey(m.message_id)) {
+			var actor = listeners.remove(m.message_id);
+			actor.accept(this, m);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react) {
+		listeners.put(messageID, react);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

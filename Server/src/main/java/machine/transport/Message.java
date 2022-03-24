@@ -1,6 +1,5 @@
 package machine.transport;
 
-import machine.descriptor.Machine;
 import machine.server.Console;
 import machine.server.Server;
 
@@ -9,7 +8,17 @@ public class Message {
 	// Using snake case to match JSON encoding
 	public Integer message_id;
 	public Command command;
+	public String content;
 	
+	Message(Integer id, Command c) {
+		message_id = id;
+		command = c;
+	}
+	
+	Message(Integer id, Command c, String i) {
+		this(id, c);
+		content = i;
+	}
 	
 	public static Message valueOf(String json) {
 		try {
@@ -19,27 +28,15 @@ public class Message {
 			e.printStackTrace();
 			return null;
 		}
-		
-		/*
-		try {
-			Message baseMessage = Server.json.fromJson(json, Message.class);
-			if(baseMessage != null && baseMessage.message_type != null) {
-				return Server.json.fromJson(json, MessageTypes.get(baseMessage.message_type));
-			}
-			return baseMessage;
-		} catch(Exception e) {
-
-		} */
 	}
 
 	public boolean shouldForwardToUserEnvironments() {
 		return false;
 	}
-
-	/**
-	 * Performs local handling prior to passthrough, if applicable.
-	 */
-	public void handle(Machine connection) {}
+	
+	public void invoke(Messenger messenger) {
+		command.invoke(messenger, this);
+	}
 	
 	@Override
 	public String toString() {
