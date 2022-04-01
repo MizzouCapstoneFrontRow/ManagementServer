@@ -14,14 +14,15 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
 @SuppressWarnings("unused")
 public class Machine extends Thread implements Messenger {
 	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
-	private String displayName;
-	private Feature[] features;
-	private Function[] functions;
+	private JsonObject description;
 	
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
@@ -29,25 +30,31 @@ public class Machine extends Thread implements Messenger {
 		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
 	
-	private Machine(Socket socket, InputStreamReader in, OutputStreamWriter out) {
+	private Machine(Socket socket, InputStreamReader in, OutputStreamWriter out) throws JsonSyntaxException, IOException {
 		this();
 		this.socket = socket;
 		this.in = new BufferedReader(in);
 		this.out = new BufferedWriter(out);
+		this.description = Server.json.fromJson(this.in.readLine(), JsonObject.class);
+	}
+	
+	private Machine(Socket socket, BufferedReader in, BufferedWriter out, JsonObject description) {
+		this();
+		this.socket = socket;
+		this.in = in;
+		this.out = out;
+		this.description = description;
 	}
 	
 	public static Machine valueOf(Socket socket) throws IOException {
 		InputStreamReader in = new InputStreamReader(socket.getInputStream());
-		BufferedReader temp = new BufferedReader(in);
+		BufferedReader bin = new BufferedReader(in);
 		OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+		BufferedWriter bout = new BufferedWriter(out);
 		
-		Machine m = Server.json.fromJson(temp.readLine(), Machine.class);
+		JsonObject m = Server.json.fromJson(bin.readLine(), JsonObject.class);
 		
-		m.in = temp;
-		m.out = new BufferedWriter(out);
-		m.socket = socket;
-		
-		return m;
+		return new Machine(socket, bin, bout, m);
 	}
 	
 	// Reads a line of input from the socket
@@ -91,20 +98,26 @@ public class Machine extends Thread implements Messenger {
 	}
 
 	public void shutdown() throws IOException {
-		Server.clients.remove(displayName);
+		Server.clients.remove(toString());
 		socket.close();
 		Console.format("Machine %s has disconnected", getName());
 	}
 	
 	@Override
 	public String toString() {
-		return displayName;
+		return description.get("displayName").getAsString();
+	}
+	
+	public String getID() {
+		return toString();
 	}
 	
 	@Override
 	public void run() {		
-		Server.clients.put(displayName, this);
+		Server.clients.put(toString(), this);
 		Console.format("Machine %s has connected", getName());
+		
+		writeMessage(new Message("Connection Accepted"));
 		
 		while(isReady()) {
 			Message m = readMessage();

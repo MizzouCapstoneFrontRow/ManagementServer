@@ -10,7 +10,7 @@ public interface Messenger {
 	
 	public Boolean isReady();
 	
-	public String getName();
+	public String getID();
 	
 	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react);
 	

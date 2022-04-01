@@ -33,6 +33,7 @@ public class Server {
 			loop();
 		} catch(SocketException e) {
 			Console.log("Socket closed, server exiting");
+			e.printStackTrace();
 		} catch(Exception e) {
 			Console.log("An exception occurred while executing the Main thread:");
 			e.printStackTrace(console.out);

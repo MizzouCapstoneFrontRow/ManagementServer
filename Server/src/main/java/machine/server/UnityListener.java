@@ -97,6 +97,15 @@ public class UnityListener extends Thread implements Messenger {
 		connection.close();
 	}
 	
+	@Override
+	public String toString() {
+		return "Unity";
+	}
+	
+	public String getID() {
+		return toString();
+	}
+	
 	private Boolean react(Message m) {
 		if(listeners.containsKey(m.message_id)) {
 			var actor = listeners.remove(m.message_id);
