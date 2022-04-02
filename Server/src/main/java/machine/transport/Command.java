@@ -59,6 +59,16 @@ public enum Command {
 		Console.format("Function return from: %s", messenger);
 		// When a function return is received, return it immediately to Unity
 		Server.unity.writeMessage(message);
+	// ---------------------------------------------------------------- SENSOR_READ
+	}), sensor_read((userMessenger, message) -> {
+		// Message from Unity representing a request to read a sensor.
+		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
+		Messenger clientMessenger = Server.clients.get(messageContent.get("target").getAsString());
+		clientMessenger.writeMessage(message);
+	// ---------------------------------------------------------------- SENSOR_RETURN
+	}), sensor_return((clientMessenger, message) -> {
+		// Message from a Client representing a reply to a sensor read with the value.
+		Server.unity.writeMessage(message);
 	// ---------------------------------------------------------------- AXIS_CHANGE
 	}), axis_change((userMessenger, message) -> {
 		// Message from Unity representing a request to change an axis.
