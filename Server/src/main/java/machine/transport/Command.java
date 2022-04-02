@@ -2,6 +2,7 @@ package machine.transport;
 
 import java.util.function.BiConsumer;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import machine.descriptor.Machine;
@@ -58,11 +59,38 @@ public enum Command {
 		Console.format("Function return from: %s", messenger);
 		// When a function return is received, return it immediately to Unity
 		Server.unity.writeMessage(message);
+	// ---------------------------------------------------------------- AXIS_CHANGE
+	}), axis_change((userMessenger, message) -> {
+		// Message from Unity representing a request to change an axis.
+		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
+		Messenger clientMessenger = Server.clients.get(messageContent.get("target").getAsString());
+		clientMessenger.writeMessage(message);
+	// ---------------------------------------------------------------- AXIS_RETURN
+	}), axis_return((clientMessenger, message) -> {
+		// Message from a Client representing a reply to an axis change.
+		Server.unity.writeMessage(message);
+	// ---------------------------------------------------------------- UNSUPPORTED_OPERATION
+	}), unsupported_operation((inboundMessenger, message) -> {
+
+		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
+		JsonElement messageTarget = messageContent.get("target");
+		try {
+			Console.format("Caught Unsupported Operation! Operation: \"%s\", Reason:\"%s\".", messageContent.get("operation").getAsString(), messageContent.get("reason").getAsString());
+		} catch (Throwable ignored) {}
+
+		if(inboundMessenger instanceof Machine) {
+			Server.unity.writeMessage(message);
+		}
+		else if(messageTarget != null) {
+			Messenger clientMessenger = Server.clients.get(messageTarget.getAsString());
+			clientMessenger.writeMessage(message);
+		}
+
 	});
 	
 	// ---------------------------------------------------------------- MECHANICAL STUFF
 	
-	private BiConsumer<Messenger, Message> action;
+	private final BiConsumer<Messenger, Message> action;
 	
 	Command(BiConsumer<Messenger, Message> action) {
 		this.action = action;
