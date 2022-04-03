@@ -105,7 +105,7 @@ public class Machine extends Thread implements Messenger {
 	
 	@Override
 	public String toString() {
-		return description.get("displayName").getAsString();
+		return description.get("name").getAsString();
 	}
 	
 	public String getID() {
