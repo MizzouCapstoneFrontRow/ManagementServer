@@ -30,6 +30,7 @@ public class Server {
 			unity = new UnityListener();
 			json = new Gson();
 			thread = Thread.currentThread();
+			unity.start();
 			loop();
 		} catch(SocketException e) {
 			Console.log("Socket closed, server exiting");

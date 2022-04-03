@@ -81,7 +81,9 @@ public class UnityListener extends Thread implements Messenger {
 		try {
 			write(message.toString());
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			Console.format("Failed to Write Message!\nRaw Content: \"%s\"", message != null ? (message.content != null ? message.content : "null") : "null");
+			e.printStackTrace();
 			return false;
 		}
 	}
