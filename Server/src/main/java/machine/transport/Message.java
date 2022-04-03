@@ -74,7 +74,11 @@ public class Message {
 	
 	@Override
 	public String toString() {
-		return Server.json.toJson(this);
+		JsonObject contentToSend = content.deepCopy();
+		contentToSend.addProperty("message_id", message_id);
+		String toReturn = Server.json.toJson(contentToSend);
+		//Console.format("Message::toString - \"%s\"", toReturn);
+		return toReturn;
 	}
 
 }
