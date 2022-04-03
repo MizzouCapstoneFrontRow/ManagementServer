@@ -63,17 +63,12 @@ public class UnityListener extends Thread implements Messenger {
 	
 	// Reads a Message object from the socket
 	public Message readMessage() {
-		Message toReturn;
 		try {
-			toReturn = Message.valueOf(read());
-		} catch(Exception e) {
-			e.printStackTrace();
-			toReturn = null;
+			String stringFromSocket = read();
+			return stringFromSocket == null ? null : Message.valueOf(stringFromSocket);
+		} catch (IOException e) {
+			return null;
 		}
-		if(toReturn == null) {
-			//Console.log("Failed to Read Message!");
-		}
-		return toReturn;
 	}
 	
 	// Writes a Message object to the socket

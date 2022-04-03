@@ -81,7 +81,8 @@ public class Machine extends Thread implements Messenger {
 	// Reads a Message object from the socket
 	public Message readMessage() {
 		try {
-			return Message.valueOf(read());
+			String stringFromSocket = read();
+			return stringFromSocket == null ? null : Message.valueOf(stringFromSocket);
 		} catch (IOException e) {
 			return null;
 		}

@@ -60,7 +60,7 @@ public class Message {
 			//Console.format("--- MESSAGE ---\nmessage_id: %s\n\n\ncommand:\n%s\n\n\ncontent:\n%s\n--- END MESSAGE ---", toReturn.message_id, toReturn.command, toReturn.content);
 			return toReturn;
 		} catch (Throwable t) {
-			Console.format("Failed to Read Message! Caught Exception \"%s\".\nRaw Message: \"%s\"\n", t.toString(), json);
+			Console.format("Failed to Read Message! Caught Exception \"%s\".\nRaw Message: \"%s\"\n", t.toString(), json == null ? "null" : json);
 			//t.printStackTrace();
 		}
 		return null;

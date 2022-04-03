@@ -40,20 +40,25 @@ public class Server {
 			e.printStackTrace(console.out);
 		}
 		try {
+			thread.interrupt();
+			socket.close();
 			unity.shutdown();
 		} catch (Throwable t) {
-			Console.log("Failed to Close Unity Listener!");
+			Console.log("Failed to Properly Shutdown!");
 		}
 		Console.stopLogging();
 	}
 	
 	public static void loop() throws IOException {
 		Console.log("Accepting connections");
-		while(!Thread.interrupted()) {
-			Machine machine = Machine.valueOf(socket.accept());
-			
-			// machine connection monitoring happens in new thread
-			machine.start();
+		while(!socket.isClosed()) {
+			try {
+				Machine machine = Machine.valueOf(socket.accept());
+				// machine connection monitoring happens in new thread
+				machine.start();
+			} catch (Throwable t) {
+				if(!socket.isClosed()) Console.log("Failed to accept socket!");
+			}
 		}
 	}
 	
