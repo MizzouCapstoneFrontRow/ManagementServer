@@ -113,11 +113,10 @@ public class Machine extends Thread implements Messenger {
 	}
 	
 	@Override
-	public void run() {		
+	public void run() {
+		//Console.format(description == null ? "description is null!" : description.toString());
 		Server.clients.put(toString(), this);
 		Console.format("Machine %s has connected", getName());
-		
-		writeMessage(new Message("Connection Accepted"));
 		
 		while(isReady()) {
 			Message m = readMessage();

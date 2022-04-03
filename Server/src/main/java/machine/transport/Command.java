@@ -28,7 +28,7 @@ public enum Command {
 		/* We re-use the same Message Object and pass it back to the caller
 		 * With the list of clients as the content
 		 */
-		message.content = Server.json.toJson(Server.clients.keySet());
+		message.content = Server.json.toJsonTree(Server.clients.keySet()).getAsJsonObject();
 		messenger.writeMessage(message);
 	// ---------------------------------------------------------------- MACHINE_DESCRIPTION
 	}), machine_description((messenger, message) -> {
@@ -47,12 +47,12 @@ public enum Command {
 		 */
 		
 		// We use the "target" member of the message to get the correct machine
-		Messenger m = Server.clients.get(content.get("target").getAsString());
+		Messenger m = Server.clients.get(message.content.get("target").getAsString());
 		
 		/* We re-use the same Message Object and pass it onto the client
 		 * With the "target" member removed
 		 */
-		message.content = content.get("call").getAsString();
+		message.content = message.content.get("call").getAsJsonObject();
 		m.writeMessage(message);
 	// ---------------------------------------------------------------- FUNCTION_RETURN
 	}), function_return((messenger, message) -> {

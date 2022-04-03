@@ -1,5 +1,7 @@
 package machine.transport;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import machine.server.Console;
 import machine.server.Server;
 
@@ -9,31 +11,57 @@ public class Message {
 	// Using snake case to match JSON encoding
 	public Integer message_id;
 	public Command command;
-	public String content;
+	public JsonObject content;
 	
-	Message(Integer id, Command c) {
-		message_id = id;
-		command = c;
+	Message(Integer message_id, Command command) {
+		this.message_id = message_id;
+		this.command = command;
 	}
 	
-	Message(Integer id, Command c, String i) {
-		this(id, c);
-		content = i;
+	Message(Integer message_id, Command command, JsonObject content) {
+		this(message_id, command);
+		this.content = content;
+	}
+
+	Message(Integer message_id, Command command, String content) {
+		this(message_id, command);
+		JsonObject jsonObject = null;
+		try {
+			jsonObject = Server.json.fromJson(content, JsonObject.class);
+		} catch (JsonSyntaxException jsonSyntaxException) {
+			Console.format("Caught JsonSyntaxException when Constructing Message!\nRaw Message: \"%s\"", content);
+			jsonSyntaxException.printStackTrace();
+		}
+		this.content = jsonObject;
+	}
+
+	public Message(JsonObject content) {
+		this(generated_id++, null, content);
 	}
 	
 	public Message(String content) {
-		this(generated_id++, null, content);
+		this(generated_id++, null);
+		JsonObject jsonObject = null;
+		try {
+			jsonObject = Server.json.fromJson(content, JsonObject.class);
+		} catch (JsonSyntaxException jsonSyntaxException) {
+			Console.format("Caught JsonSyntaxException when Constructing Message!\nRaw Message: \"%s\"", content);
+			jsonSyntaxException.printStackTrace();
+		}
+		this.content = jsonObject;
 	}
 	
 	public static Message valueOf(String json) {
 		try {
-			Console.log(json);
-			return Server.json.fromJson(json, Message.class);
-		} catch(Exception e) {
-			Console.log("Failed to Read Message!");
-			e.printStackTrace();
-			return null;
+			JsonObject content = Server.json.fromJson(json, JsonObject.class);
+			Message toReturn = new Message(content.get("message_id").getAsInt(), Command.valueOf(content.get("message_type").getAsString()), content);
+			//Console.format("--- MESSAGE ---\nmessage_id: %s\n\n\ncommand:\n%s\n\n\ncontent:\n%s\n--- END MESSAGE ---", toReturn.message_id, toReturn.command, toReturn.content);
+			return toReturn;
+		} catch (Throwable t) {
+			Console.format("Failed to Read Message! Caught Exception \"%s\".\nRaw Message: \"%s\"\n", t.toString(), json);
+			//t.printStackTrace();
 		}
+		return null;
 	}
 
 	public boolean shouldForwardToUserEnvironments() {
