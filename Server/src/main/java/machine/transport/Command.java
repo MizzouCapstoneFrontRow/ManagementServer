@@ -2,6 +2,7 @@ package machine.transport;
 
 import java.util.function.BiConsumer;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -28,7 +29,9 @@ public enum Command {
 		/* We re-use the same Message Object and pass it back to the caller
 		 * With the list of clients as the content
 		 */
-		message.content = Server.json.toJsonTree(Server.clients.keySet()).getAsJsonObject();
+		JsonArray devices = Server.json.fromJson(Server.json.toJson(Server.clients.keySet()), JsonArray.class);
+		message.content = new JsonObject();
+		message.content.add("Devices", devices);
 		messenger.writeMessage(message);
 	// ---------------------------------------------------------------- MACHINE_DESCRIPTION
 	}), machine_description((messenger, message) -> {

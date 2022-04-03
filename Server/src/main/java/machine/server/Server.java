@@ -39,6 +39,11 @@ public class Server {
 			Console.log("An exception occurred while executing the Main thread:");
 			e.printStackTrace(console.out);
 		}
+		try {
+			unity.shutdown();
+		} catch (Throwable t) {
+			Console.log("Failed to Close Unity Listener!");
+		}
 		Console.stopLogging();
 	}
 	

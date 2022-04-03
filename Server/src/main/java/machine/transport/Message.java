@@ -54,7 +54,9 @@ public class Message {
 	public static Message valueOf(String json) {
 		try {
 			JsonObject content = Server.json.fromJson(json, JsonObject.class);
-			Message toReturn = new Message(content.get("message_id").getAsInt(), Command.valueOf(content.get("message_type").getAsString()), content);
+			int message_id = -1;
+			try { message_id = content.get("message_id").getAsInt(); } catch (Exception ignored) {}
+			Message toReturn = new Message(message_id, Command.valueOf(content.get("message_type").getAsString()), content);
 			//Console.format("--- MESSAGE ---\nmessage_id: %s\n\n\ncommand:\n%s\n\n\ncontent:\n%s\n--- END MESSAGE ---", toReturn.message_id, toReturn.command, toReturn.content);
 			return toReturn;
 		} catch (Throwable t) {
