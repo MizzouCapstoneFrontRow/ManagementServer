@@ -144,6 +144,11 @@ public class Machine extends Thread implements Messenger {
 	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react) {
 		listeners.put(messageID, react);
 	}
+
+	public JsonObject getMachineDescriptor() {
+		return description;
+	}
+
 }
 
 

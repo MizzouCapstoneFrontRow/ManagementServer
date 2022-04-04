@@ -33,6 +33,12 @@ public enum Command {
 		message.content = new JsonObject();
 		message.content.add("Devices", devices);
 		messenger.writeMessage(message);
+	// ---------------------------------------------------------------- SELECT
+	}), select((messenger, message) -> {
+		// Message from Unity requesting the machine descriptor given the target's name
+		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
+		Machine targetMachine = Server.clients.get(messageContent.get("target").getAsString());
+		Server.unity.writeMessage(new Message(targetMachine.getMachineDescriptor()));
 	// ---------------------------------------------------------------- MACHINE_DESCRIPTION
 	}), machine_description((messenger, message) -> {
 		// This is automatic, so we do nothing
