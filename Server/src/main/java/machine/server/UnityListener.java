@@ -34,6 +34,7 @@ public class UnityListener extends Thread implements Messenger {
 				connection = socket.accept();
 				in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+				Console.format("Received Unity Connection from %s:%s", socket.getInetAddress().toString(), socket.getLocalPort());
 				
 				while(isReady()) {
 					Message m = readMessage();

@@ -118,6 +118,9 @@ public class Machine extends Thread implements Messenger {
 		//Console.format(description == null ? "description is null!" : description.toString());
 		Server.clients.put(toString(), this);
 		Console.format("Machine %s has connected", getName());
+
+		//try{ sleep(3000); } catch(Throwable t) {t.printStackTrace();}
+		//Console.format("Wrote Message! Successful? %s", writeMessage(new Message("{\"message_type\":\"axis_change\",\"name\":\"example\",\"value\":0.5}")) ? "Yes!" : "No.");
 		
 		while(isReady()) {
 			Message m = readMessage();
