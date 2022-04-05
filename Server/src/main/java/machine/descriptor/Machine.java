@@ -91,6 +91,7 @@ public class Machine extends Thread implements Messenger {
 	// Writes a Message object to the socket
 	public Boolean writeMessage(Message message) {
 		try {
+			message.content.remove("target");
 			write(message.toString());
 			return true;
 		} catch (IOException e) {
