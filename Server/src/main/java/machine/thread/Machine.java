@@ -1,4 +1,4 @@
-package machine.descriptor;
+package machine.thread;
 
 import machine.server.Console;
 import machine.server.Server;

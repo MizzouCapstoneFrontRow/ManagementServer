@@ -6,7 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import machine.descriptor.Machine;
+import machine.thread.Machine;
 import machine.server.Console;
 import machine.server.Server;
 

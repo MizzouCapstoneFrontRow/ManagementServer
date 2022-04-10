@@ -5,7 +5,8 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.HashMap;
 
-import machine.descriptor.Machine;
+import machine.thread.Machine;
+import machine.thread.UnityListener;
 import machine.transport.Message;
 
 import com.google.gson.Gson;

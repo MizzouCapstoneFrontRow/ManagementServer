@@ -1,4 +1,4 @@
-package machine.server;
+package machine.thread;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
+import machine.server.Console;
+import machine.server.Server;
 import machine.transport.Message;
 import machine.transport.Messenger;
 
