@@ -1,4 +1,4 @@
-package machine.server;
+package com.github.mizzoucapstonefrontrow.managementserver.server;
 
 import java.io.IOException;
 import java.io.InputStream;

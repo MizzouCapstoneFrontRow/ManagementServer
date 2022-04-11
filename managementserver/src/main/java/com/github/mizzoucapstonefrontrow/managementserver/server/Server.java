@@ -1,14 +1,15 @@
-package machine.server;
+package com.github.mizzoucapstonefrontrow.managementserver.server;
 
 import com.google.gson.Gson;
-import machine.thread.Machine;
-import machine.thread.UnityListener;
-import machine.transport.Message;
+import com.github.mizzoucapstonefrontrow.managementserver.thread.Machine;
+import com.github.mizzoucapstonefrontrow.managementserver.thread.UnityListener;
+import com.github.mizzoucapstonefrontrow.managementserver.transport.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Server {
 	public static ServerSocket socket;
@@ -25,7 +26,7 @@ public class Server {
 		settings = SettingsManager.init();
 		try {
 			Console.log("Server starting up");
-			socket = new ServerSocket(settings.getInt("Machine-port"));
+			socket = new ServerSocket(Optional.ofNullable(settings.getInt("Machine-port")).orElse(45575));
 			clients = new HashMap<String, Machine>();
 			unity = new UnityListener();
 			json = new Gson();

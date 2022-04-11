@@ -1,4 +1,4 @@
-package machine.transport;
+package com.github.mizzoucapstonefrontrow.managementserver.transport;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;

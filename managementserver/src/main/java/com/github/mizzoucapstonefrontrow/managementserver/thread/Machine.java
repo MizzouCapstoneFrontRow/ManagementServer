@@ -1,11 +1,11 @@
-package machine.thread;
+package com.github.mizzoucapstonefrontrow.managementserver.thread;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import machine.server.Console;
-import machine.server.Server;
-import machine.transport.Message;
-import machine.transport.Messenger;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Console;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Server;
+import com.github.mizzoucapstonefrontrow.managementserver.transport.Message;
+import com.github.mizzoucapstonefrontrow.managementserver.transport.Messenger;
 
 import java.io.*;
 import java.net.Socket;

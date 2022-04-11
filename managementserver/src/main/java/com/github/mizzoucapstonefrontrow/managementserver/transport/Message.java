@@ -1,9 +1,9 @@
-package machine.transport;
+package com.github.mizzoucapstonefrontrow.managementserver.transport;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import machine.server.Console;
-import machine.server.Server;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Console;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Server;
 
 public class Message {
 	public static Integer generated_id = 0;

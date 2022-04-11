@@ -1,9 +1,17 @@
-Server/target/
-TestClient/target/
+# Gradle Files
+.gradle
+build
+run
+
+# IntelliJ Files
 .idea
-Server/.idea
-TestClient/.idea
 *.ipr
 *.iws
 *.iml
 .shelf/
+
+# Eclipse Files
+.classpath
+.metadata
+.project
+.settings

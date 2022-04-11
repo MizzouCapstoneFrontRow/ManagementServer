@@ -1,14 +1,15 @@
-package machine.thread;
+package com.github.mizzoucapstonefrontrow.managementserver.thread;
 
-import machine.server.Console;
-import machine.server.Server;
-import machine.transport.Message;
-import machine.transport.Messenger;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Console;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Server;
+import com.github.mizzoucapstonefrontrow.managementserver.transport.Message;
+import com.github.mizzoucapstonefrontrow.managementserver.transport.Messenger;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("unused")
@@ -21,7 +22,7 @@ public class UnityListener extends Thread implements Messenger {
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
 	public UnityListener() throws IOException {
-		socket = new ServerSocket(Server.settings.getInt("Unity-port"));
+		socket = new ServerSocket(Optional.ofNullable(Server.settings.getInt("Unity-port")).orElse(45576));
 		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
 	

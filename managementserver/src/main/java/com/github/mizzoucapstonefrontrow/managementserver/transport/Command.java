@@ -1,11 +1,11 @@
-package machine.transport;
+package com.github.mizzoucapstonefrontrow.managementserver.transport;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import machine.server.Console;
-import machine.server.Server;
-import machine.thread.Machine;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Console;
+import com.github.mizzoucapstonefrontrow.managementserver.server.Server;
+import com.github.mizzoucapstonefrontrow.managementserver.thread.Machine;
 
 import java.io.IOException;
 import java.util.Collection;
