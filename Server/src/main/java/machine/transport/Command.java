@@ -1,14 +1,15 @@
 package machine.transport;
 
-import java.util.function.BiConsumer;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import machine.thread.Machine;
 import machine.server.Console;
 import machine.server.Server;
+import machine.thread.Machine;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.function.BiConsumer;
 
 public enum Command {
 	// ---------------------------------------------------------------- NOP
@@ -17,8 +18,10 @@ public enum Command {
 	exit((messenger, message) -> {
 		// A messenger has requested full system shutdown
 		try {
-			for(Machine machine : Server.clients.values()) {
+			Collection<Machine> clients = Server.clients.values();
+			for(Machine machine : clients) {
 				machine.shutdown();
+				Server.clients.remove(machine.getName());
 			}
 			Server.socket.close();
 		} catch(Exception e) {
@@ -56,6 +59,9 @@ public enum Command {
 		if(messenger instanceof Machine) {
 			Message resetMessage = new Message("{\"message_type\":\"reset\",\"target\":\"" + messenger.toString() + "\"}");
 			Server.unity.writeMessage(resetMessage);
+			try {
+				messenger.shutdown();
+			} catch (IOException ignored) {}
 			Server.clients.remove(messenger.toString());
 		}
 		else {

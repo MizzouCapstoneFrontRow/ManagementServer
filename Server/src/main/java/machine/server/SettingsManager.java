@@ -1,12 +1,12 @@
 package machine.server;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.HashMap;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.HashMap;
 
 public class SettingsManager {
 	private static final String SETTINGS_FILE = "config.json";

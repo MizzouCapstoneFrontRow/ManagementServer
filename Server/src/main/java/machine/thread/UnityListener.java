@@ -1,19 +1,15 @@
 package machine.thread;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.function.BiConsumer;
-
 import machine.server.Console;
 import machine.server.Server;
 import machine.transport.Message;
 import machine.transport.Messenger;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 @SuppressWarnings("unused")
 public class UnityListener extends Thread implements Messenger {

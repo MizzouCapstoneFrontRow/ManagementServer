@@ -1,21 +1,16 @@
 package machine.thread;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import machine.server.Console;
 import machine.server.Server;
 import machine.transport.Message;
 import machine.transport.Messenger;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 
 @SuppressWarnings("unused")
 public class Machine extends Thread implements Messenger {
@@ -100,7 +95,6 @@ public class Machine extends Thread implements Messenger {
 	}
 
 	public void shutdown() throws IOException {
-		Server.clients.remove(toString());
 		socket.close();
 		Console.format("Machine %s has disconnected", getName());
 	}
@@ -117,7 +111,6 @@ public class Machine extends Thread implements Messenger {
 	@Override
 	public void run() {
 		//Console.format(description == null ? "description is null!" : description.toString());
-		Server.clients.put(toString(), this);
 		Console.format("Machine %s has connected", getName());
 
 		//try{ sleep(3000); } catch(Throwable t) {t.printStackTrace();}
@@ -133,6 +126,7 @@ public class Machine extends Thread implements Messenger {
 		}
 		try {
 			shutdown();
+			Server.clients.remove(getName());
 		} catch (IOException e) {
 			Console.log("Error while shutting down machine connection");
 			e.printStackTrace();

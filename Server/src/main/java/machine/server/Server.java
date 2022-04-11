@@ -1,15 +1,14 @@
 package machine.server;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.util.HashMap;
-
+import com.google.gson.Gson;
 import machine.thread.Machine;
 import machine.thread.UnityListener;
 import machine.transport.Message;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.HashMap;
 
 public class Server {
 	public static ServerSocket socket;
@@ -55,8 +54,16 @@ public class Server {
 		while(!socket.isClosed()) {
 			try {
 				Machine machine = Machine.valueOf(socket.accept());
-				// machine connection monitoring happens in new thread
-				machine.start();
+				if(!clients.containsKey(machine.getName())) {
+					machine.start();
+					Server.clients.put(machine.getName(), machine);
+				}
+				else {
+					Console.format("Disconnecting Inbound Client: Name \"%s\" is already in use!", machine.getName());
+					Message disconnectMessage = new Message("{\"message_type\":\"disconnect\"}");
+					machine.writeMessage(disconnectMessage);
+					machine.shutdown(); // This cleanup is still necessary, even though the thread is never started.
+				}
 			} catch (Throwable t) {
 				if(!socket.isClosed()) Console.log("Failed to accept socket!");
 			}

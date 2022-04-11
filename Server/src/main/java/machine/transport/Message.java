@@ -65,10 +65,6 @@ public class Message {
 		}
 		return null;
 	}
-
-	public boolean shouldForwardToUserEnvironments() {
-		return false;
-	}
 	
 	public void invoke(Messenger messenger) {
 		command.invoke(messenger, this);
