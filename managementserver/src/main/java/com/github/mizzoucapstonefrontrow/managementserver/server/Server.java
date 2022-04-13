@@ -1,5 +1,6 @@
 package com.github.mizzoucapstonefrontrow.managementserver.server;
 
+import com.github.mizzoucapstonefrontrow.managementserver.thread.StreamManager;
 import com.google.gson.Gson;
 import com.github.mizzoucapstonefrontrow.managementserver.thread.Machine;
 import com.github.mizzoucapstonefrontrow.managementserver.thread.UserEnvironmentListener;
@@ -15,6 +16,8 @@ public class Server {
 	public static ServerSocket socket;
 	public static HashMap<String, Machine> clients;
 	public static UserEnvironmentListener userEnvironment;
+	public static StreamManager machineStreamManager;
+	public static StreamManager userEnvironmentStreamManager;
 	public static Gson json;
 	public static SettingsManager settings;
 	public static Console console;
@@ -29,9 +32,13 @@ public class Server {
 			socket = new ServerSocket(Optional.ofNullable(settings.getInt("machine_port")).orElse(45575));
 			clients = new HashMap<String, Machine>();
 			userEnvironment = new UserEnvironmentListener();
+			machineStreamManager = StreamManager.getMachineInstance();
+			userEnvironmentStreamManager = StreamManager.getUserEnvironmentInstance();
 			json = new Gson();
 			thread = Thread.currentThread();
 			userEnvironment.start();
+			machineStreamManager.start();
+			userEnvironmentStreamManager.start();
 			loop();
 		} catch(SocketException e) {
 			Console.log("Socket closed, server exiting");
@@ -44,8 +51,11 @@ public class Server {
 			thread.interrupt();
 			socket.close();
 			userEnvironment.shutdown();
+			machineStreamManager.shutdown();
+			userEnvironmentStreamManager.shutdown();
 		} catch (Throwable t) {
 			Console.log("Failed to Properly Shutdown!");
+			t.printStackTrace(console.out);
 		}
 		Console.stopLogging();
 	}

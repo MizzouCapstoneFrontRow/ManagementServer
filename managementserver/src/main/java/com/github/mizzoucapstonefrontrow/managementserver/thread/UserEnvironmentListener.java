@@ -91,7 +91,7 @@ public class UserEnvironmentListener extends Thread implements Messenger {
 	@Override
 	public void shutdown() throws IOException {
 		socket.close();
-		connection.close();
+		if(connection != null) connection.close();
 	}
 	
 	@Override
