@@ -41,10 +41,10 @@ public enum Command {
 	}),
 	// ---------------------------------------------------------------- SELECT
 	select((messenger, message) -> {
-		// Message from Unity requesting the machine descriptor given the target's name
+		// Message from User Environment requesting the machine descriptor given the target's name
 		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
 		Machine targetMachine = Server.clients.get(messageContent.get("target").getAsString());
-		Server.unity.writeMessage(new Message(targetMachine.getMachineDescriptor()));
+		Server.userEnvironment.writeMessage(new Message(targetMachine.getMachineDescriptor()));
 	}),
 	// ---------------------------------------------------------------- MACHINE_DESCRIPTION
 	machine_description((messenger, message) -> {
@@ -58,7 +58,7 @@ public enum Command {
 	disconnect((messenger, message) -> {
 		if(messenger instanceof Machine) {
 			Message resetMessage = new Message("{\"message_type\":\"reset\",\"target\":\"" + messenger.toString() + "\"}");
-			Server.unity.writeMessage(resetMessage);
+			Server.userEnvironment.writeMessage(resetMessage);
 			try {
 				messenger.shutdown();
 			} catch (IOException ignored) {}
@@ -91,12 +91,12 @@ public enum Command {
 	// ---------------------------------------------------------------- FUNCTION_RETURN
 	function_return((messenger, message) -> {
 		Console.format("Function return from: %s", messenger);
-		// When a function return is received, return it immediately to Unity
-		Server.unity.writeMessage(message);
+		// When a function return is received, return it immediately to User Environment
+		Server.userEnvironment.writeMessage(message);
 	}),
 	// ---------------------------------------------------------------- SENSOR_READ
 	sensor_read((userMessenger, message) -> {
-		// Message from Unity representing a request to read a sensor.
+		// Message from User Environment representing a request to read a sensor.
 		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
 		Messenger clientMessenger = Server.clients.get(messageContent.get("target").getAsString());
 		clientMessenger.writeMessage(message);
@@ -104,11 +104,11 @@ public enum Command {
 	}),
 	sensor_return((clientMessenger, message) -> {
 		// Message from a Client representing a reply to a sensor read with the value.
-		Server.unity.writeMessage(message);
+		Server.userEnvironment.writeMessage(message);
 	}),
 	// ---------------------------------------------------------------- AXIS_CHANGE
 	axis_change((userMessenger, message) -> {
-		// Message from Unity representing a request to change an axis.
+		// Message from User Environment representing a request to change an axis.
 		JsonObject messageContent = Server.json.fromJson(message.content, JsonObject.class);
 		Messenger clientMessenger = Server.clients.get(messageContent.get("target").getAsString());
 		clientMessenger.writeMessage(message);
@@ -116,7 +116,7 @@ public enum Command {
 	// ---------------------------------------------------------------- AXIS_RETURN
 	axis_return((clientMessenger, message) -> {
 		// Message from a Client representing a reply to an axis change.
-		Server.unity.writeMessage(message);
+		Server.userEnvironment.writeMessage(message);
 	}),
 	// ---------------------------------------------------------------- UNSUPPORTED_OPERATION
 	unsupported_operation((inboundMessenger, message) -> {
@@ -128,7 +128,7 @@ public enum Command {
 		} catch (Throwable ignored) {}
 
 		if(inboundMessenger instanceof Machine) {
-			Server.unity.writeMessage(message);
+			Server.userEnvironment.writeMessage(message);
 		}
 		else if(messageTarget != null) {
 			Messenger clientMessenger = Server.clients.get(messageTarget.getAsString());

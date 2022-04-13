@@ -2,7 +2,7 @@ package com.github.mizzoucapstonefrontrow.managementserver.server;
 
 import com.google.gson.Gson;
 import com.github.mizzoucapstonefrontrow.managementserver.thread.Machine;
-import com.github.mizzoucapstonefrontrow.managementserver.thread.UnityListener;
+import com.github.mizzoucapstonefrontrow.managementserver.thread.UserEnvironmentListener;
 import com.github.mizzoucapstonefrontrow.managementserver.transport.Message;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class Server {
 	public static ServerSocket socket;
 	public static HashMap<String, Machine> clients;
-	public static UnityListener unity;
+	public static UserEnvironmentListener userEnvironment;
 	public static Gson json;
 	public static SettingsManager settings;
 	public static Console console;
@@ -28,10 +28,10 @@ public class Server {
 			Console.log("Server starting up");
 			socket = new ServerSocket(Optional.ofNullable(settings.getInt("machine_port")).orElse(45575));
 			clients = new HashMap<String, Machine>();
-			unity = new UnityListener();
+			userEnvironment = new UserEnvironmentListener();
 			json = new Gson();
 			thread = Thread.currentThread();
-			unity.start();
+			userEnvironment.start();
 			loop();
 		} catch(SocketException e) {
 			Console.log("Socket closed, server exiting");
@@ -43,7 +43,7 @@ public class Server {
 		try {
 			thread.interrupt();
 			socket.close();
-			unity.shutdown();
+			userEnvironment.shutdown();
 		} catch (Throwable t) {
 			Console.log("Failed to Properly Shutdown!");
 		}

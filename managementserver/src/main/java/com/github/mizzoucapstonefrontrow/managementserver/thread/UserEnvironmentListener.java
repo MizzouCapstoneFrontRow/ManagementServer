@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("unused")
-public class UnityListener extends Thread implements Messenger {
+public class UserEnvironmentListener extends Thread implements Messenger {
 	ServerSocket socket;
 	Socket connection;
 	BufferedReader in;
@@ -21,7 +21,7 @@ public class UnityListener extends Thread implements Messenger {
 	
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
-	public UnityListener() throws IOException {
+	public UserEnvironmentListener() throws IOException {
 		socket = new ServerSocket(Optional.ofNullable(Server.settings.getInt("user_environment_port")).orElse(45576));
 		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
@@ -33,7 +33,7 @@ public class UnityListener extends Thread implements Messenger {
 				connection = socket.accept();
 				in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-				Console.format("Received Unity Connection from %s:%s", socket.getInetAddress().toString(), socket.getLocalPort());
+				Console.format("Received User Environment Connection from %s:%s", socket.getInetAddress().toString(), socket.getLocalPort());
 				
 				while(isReady()) {
 					Message m = readMessage();
@@ -44,7 +44,7 @@ public class UnityListener extends Thread implements Messenger {
 					}
 				}
 			} catch (IOException e) {
-				Console.log("Unity connection closed");
+				Console.log("Closed User Environment Connection");
 			}
 		}
 	}
@@ -96,7 +96,7 @@ public class UnityListener extends Thread implements Messenger {
 	
 	@Override
 	public String toString() {
-		return "Unity";
+		return "User Environment";
 	}
 	
 	public String getID() {
