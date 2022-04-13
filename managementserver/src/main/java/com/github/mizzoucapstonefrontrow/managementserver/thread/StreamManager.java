@@ -96,6 +96,12 @@ public class StreamManager extends Thread {
                     // Fetch or Create Stream
                     HashMap<String, Stream> streamsForMachine = Stream.streams.computeIfAbsent(machineName, k -> new HashMap<>());
                     Stream stream = streamsForMachine.computeIfAbsent(streamName, k -> new Stream());
+                    try {
+                        if(!stream.isAlive()) stream.start();
+                    } catch (IllegalThreadStateException e) {
+                        Console.format("Failed to Start %s Stream Thread!", side);
+                        e.printStackTrace(Console.out());
+                    }
 
                     // Add Connection to Stream
                     side.connectionAdditionFunction.accept(stream, connection);
