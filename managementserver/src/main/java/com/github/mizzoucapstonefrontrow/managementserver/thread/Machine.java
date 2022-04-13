@@ -110,11 +110,8 @@ public class Machine extends Thread implements Messenger {
 	
 	@Override
 	public void run() {
-		//Console.format(description == null ? "description is null!" : description.toString());
-		Console.format("Machine %s has connected", getName());
 
-		//try{ sleep(3000); } catch(Throwable t) {t.printStackTrace();}
-		//Console.format("Wrote Message! Successful? %s", writeMessage(new Message("{\"message_type\":\"axis_change\",\"name\":\"example\",\"value\":0.5}")) ? "Yes!" : "No.");
+		Console.format("Machine %s has connected", getName());
 		
 		while(isReady()) {
 			Message m = readMessage();
@@ -124,13 +121,15 @@ public class Machine extends Thread implements Messenger {
 				m.invoke(this);
 			}
 		}
+
 		try {
 			shutdown();
 			Server.clients.remove(getName());
 		} catch (IOException e) {
 			Console.log("Error while shutting down machine connection");
-			e.printStackTrace();
+			e.printStackTrace(Console.out());
 		}
+
 	}
 
 	@Override

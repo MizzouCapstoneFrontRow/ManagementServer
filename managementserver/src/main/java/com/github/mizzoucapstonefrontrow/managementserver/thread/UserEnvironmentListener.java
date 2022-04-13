@@ -78,7 +78,7 @@ public class UserEnvironmentListener extends Thread implements Messenger {
 			return true;
 		} catch (Exception e) {
 			Console.format("Failed to Write Message!\nRaw Content: \"%s\"", message != null ? (message.content != null ? message.content : "null") : "null");
-			e.printStackTrace();
+			e.printStackTrace(Console.out());
 			return false;
 		}
 	}

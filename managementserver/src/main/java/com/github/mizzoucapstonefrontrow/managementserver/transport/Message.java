@@ -30,7 +30,7 @@ public class Message {
 			jsonObject = Server.json.fromJson(content, JsonObject.class);
 		} catch (JsonSyntaxException jsonSyntaxException) {
 			Console.format("Caught JsonSyntaxException when Constructing Message!\nRaw Message: \"%s\"", content);
-			jsonSyntaxException.printStackTrace();
+			jsonSyntaxException.printStackTrace(Console.out());
 		}
 		this.content = jsonObject;
 	}
@@ -46,7 +46,7 @@ public class Message {
 			jsonObject = Server.json.fromJson(content, JsonObject.class);
 		} catch (JsonSyntaxException jsonSyntaxException) {
 			Console.format("Caught JsonSyntaxException when Constructing Message!\nRaw Message: \"%s\"", content);
-			jsonSyntaxException.printStackTrace();
+			jsonSyntaxException.printStackTrace(Console.out());
 		}
 		this.content = jsonObject;
 	}
@@ -61,7 +61,7 @@ public class Message {
 			return toReturn;
 		} catch (Throwable t) {
 			Console.format("Failed to Read Message! Caught Exception \"%s\".\nRaw Message: \"%s\"\n", t.toString(), json == null ? "null" : json);
-			//t.printStackTrace();
+			//t.printStackTrace(Console.out());
 		}
 		return null;
 	}

@@ -50,7 +50,7 @@ public class SettingsManager {
 			writer.close();
 		} catch(Exception e) {
 			Console.format("Failed to save settings file \"%s\"", SETTINGS_FILE);
-			e.printStackTrace();
+			e.printStackTrace(Console.out());
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class SettingsManager {
 
 		} catch (Exception e) {
 			Console.format("Failed to load config file \"%s\" - working directory is \"%s\".", SETTINGS_FILE, (new java.io.File(".")).getAbsolutePath());
-			e.printStackTrace();
+			e.printStackTrace(Console.out());
 			settings = new HashMap<>();
 		}
 	}
