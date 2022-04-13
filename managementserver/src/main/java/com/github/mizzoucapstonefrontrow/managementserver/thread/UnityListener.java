@@ -22,7 +22,7 @@ public class UnityListener extends Thread implements Messenger {
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
 	public UnityListener() throws IOException {
-		socket = new ServerSocket(Optional.ofNullable(Server.settings.getInt("Unity-port")).orElse(45576));
+		socket = new ServerSocket(Optional.ofNullable(Server.settings.getInt("user_environment_port")).orElse(45576));
 		listeners = new HashMap<Integer, BiConsumer<Messenger, Message>>();
 	}
 	

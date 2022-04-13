@@ -26,7 +26,7 @@ public class Server {
 		settings = SettingsManager.init();
 		try {
 			Console.log("Server starting up");
-			socket = new ServerSocket(Optional.ofNullable(settings.getInt("Machine-port")).orElse(45575));
+			socket = new ServerSocket(Optional.ofNullable(settings.getInt("machine_port")).orElse(45575));
 			clients = new HashMap<String, Machine>();
 			unity = new UnityListener();
 			json = new Gson();

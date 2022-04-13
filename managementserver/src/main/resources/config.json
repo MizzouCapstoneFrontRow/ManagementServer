@@ -1,5 +1,6 @@
 {
-	"Machine-port": 45575,
-	"Unity-port": 45576,
-	"Logging-TZ": ""
+	"machine_port": 45575,
+	"user_environment_port": 45576,
+	"machine_stream_port": 45577,
+	"user_environment_stream_port": 45578
 }
