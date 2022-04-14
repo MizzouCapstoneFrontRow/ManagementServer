@@ -14,10 +14,12 @@ import java.util.function.BiConsumer;
 
 @SuppressWarnings("unused")
 public class Machine extends Thread implements Messenger {
+
 	private Socket socket;
 	private BufferedReader in;
 	private BufferedWriter out;
 	private JsonObject description;
+	private long lastHeartbeatTime;
 	
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
@@ -101,7 +103,7 @@ public class Machine extends Thread implements Messenger {
 	
 	@Override
 	public String toString() {
-		return description.get("name").getAsString();
+		return "Machine \"" + description.get("name").getAsString() + "\"";
 	}
 	
 	public String getID() {
@@ -144,6 +146,16 @@ public class Machine extends Thread implements Messenger {
 
 	public JsonObject getMachineDescriptor() {
 		return description;
+	}
+
+	@Override
+	public long getLastHeartbeatTime() {
+		return System.currentTimeMillis() - lastHeartbeatTime;
+	}
+
+	@Override
+	public void setHeartbeat() {
+		lastHeartbeatTime = System.currentTimeMillis();
 	}
 
 }

@@ -14,10 +14,12 @@ import java.util.function.BiConsumer;
 
 @SuppressWarnings("unused")
 public class UserEnvironmentListener extends Thread implements Messenger {
-	ServerSocket socket;
-	Socket connection;
-	BufferedReader in;
-	BufferedWriter out;
+
+	private ServerSocket socket;
+	private Socket connection;
+	private BufferedReader in;
+	private BufferedWriter out;
+	private long lastHeartbeatTime;
 	
 	public HashMap<Integer, BiConsumer<Messenger, Message>> listeners;
 	
@@ -33,6 +35,7 @@ public class UserEnvironmentListener extends Thread implements Messenger {
 				connection = socket.accept();
 				in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+				setHeartbeat();
 				Console.format("Received User Environment Connection from %s:%s", socket.getInetAddress().toString(), socket.getLocalPort());
 				
 				while(isReady()) {
@@ -116,6 +119,17 @@ public class UserEnvironmentListener extends Thread implements Messenger {
 	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react) {
 		listeners.put(messageID, react);
 	}
+
+	@Override
+	public long getLastHeartbeatTime() {
+		return System.currentTimeMillis() - lastHeartbeatTime;
+	}
+
+	@Override
+	public void setHeartbeat() {
+		lastHeartbeatTime = System.currentTimeMillis();
+	}
+
 }
 
 

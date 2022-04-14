@@ -44,6 +44,7 @@ public class Message {
 		JsonObject jsonObject = null;
 		try {
 			jsonObject = Server.json.fromJson(content, JsonObject.class);
+			jsonObject.addProperty("message_id", message_id);
 		} catch (JsonSyntaxException jsonSyntaxException) {
 			Console.format("Caught JsonSyntaxException when Constructing Message!\nRaw Message: \"%s\"", content);
 			jsonSyntaxException.printStackTrace(Console.out());

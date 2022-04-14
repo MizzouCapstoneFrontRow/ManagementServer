@@ -13,6 +13,10 @@ public interface Messenger {
 	public String getID();
 	
 	public void onMessage(Integer messageID, BiConsumer<Messenger, Message> react);
+
+	public long getLastHeartbeatTime();
+
+	public void setHeartbeat();
 	
 	public void shutdown() throws IOException;
 }

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.github.mizzoucapstonefrontrow.managementserver.server.Console;
 import com.github.mizzoucapstonefrontrow.managementserver.server.Server;
 import com.github.mizzoucapstonefrontrow.managementserver.thread.Machine;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,6 +28,21 @@ public enum Command {
 		} catch(Exception e) {
 			Console.log("An exception occurred during server shutdown");
 			e.printStackTrace(Console.out());
+		}
+	}),
+	// ---------------------------------------------------------------- HEARTBEAT
+	heartbeat((messenger, message) -> {
+		try {
+			boolean is_reply = Server.json.fromJson(message.content, JsonObject.class).getAsBoolean();
+			if(is_reply) {
+				messenger.setHeartbeat();
+			}
+			else {
+				Message heartbeatMessage = new Message("{\"message_type\":\"heartbeat\",\"is_reply\":true}");
+				messenger.writeMessage(heartbeatMessage);
+			}
+		} catch (Exception e) {
+			Console.format("Failed to Parse Heartbeat Packet from %s! Raw Message Content: \"%s\"", messenger.toString(), message.content);
 		}
 	}),
 	// ---------------------------------------------------------------- LIST
@@ -143,7 +159,7 @@ public enum Command {
 		this.action = action;
 	}
 
-	void invoke(Messenger messenger, Message message) {
+	public void invoke(Messenger messenger, Message message) {
 		if(action != null) {
 			action.accept(messenger, message);
 		}
