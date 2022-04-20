@@ -105,7 +105,7 @@ public class StreamManager extends Thread {
 
                     // Add Connection to Stream
                     side.connectionAdditionFunction.accept(stream, connection);
-                    stream.notify();
+                    stream.synchronizedNotify();
 
                 } catch (Throwable t) {
                     Console.format("Failed to Parse Stream Descriptor from %s!", side);

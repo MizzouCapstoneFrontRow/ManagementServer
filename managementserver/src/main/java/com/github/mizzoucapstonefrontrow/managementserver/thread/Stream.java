@@ -21,55 +21,53 @@ public class Stream extends Thread {
 
     @Override
     public void run() {
-        try {
-            while (true) {
+        while (true) {
 
-                if (connectionReceiving == null || connectionSending == null) {
-                    wait();
-                }
-
-                if (connectionReceiving.isClosed()) {
-                    connectionReceiving = null;
-                    continue;
-                }
-
-                if (connectionSending.isClosed()) {
-                    connectionSending = null;
-                    continue;
-                }
-
-                InputStream inputStream = null;
-                try {
-                    inputStream = connectionReceiving.getInputStream();
-                } catch (Throwable t) {
-                    connectionReceiving = null;
-                    continue;
-                }
-
-                OutputStream outputStream = null;
-                try {
-                    outputStream = connectionSending.getOutputStream();
-                } catch (Throwable t) {
-                    connectionSending = null;
-                    continue;
-                }
-
-                try {
-                    inputStream.transferTo(outputStream);
-                } catch (IOException ignored) {}
-
+            if (connectionReceiving == null || connectionSending == null) {
+                synchronizedWait();
             }
-        } catch (InterruptedException ignored) {}
+
+            if (connectionReceiving.isClosed()) {
+                connectionReceiving = null;
+                continue;
+            }
+
+            if (connectionSending.isClosed()) {
+                connectionSending = null;
+                continue;
+            }
+
+            InputStream inputStream = null;
+            try {
+                inputStream = connectionReceiving.getInputStream();
+            } catch (Throwable t) {
+                connectionReceiving = null;
+                continue;
+            }
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = connectionSending.getOutputStream();
+            } catch (Throwable t) {
+                connectionSending = null;
+                continue;
+            }
+
+            try {
+                inputStream.transferTo(outputStream);
+            } catch (IOException ignored) {}
+
+        }
     }
 
     /**
      * Attempts to assign receiving connection - only allowed if value was previously null
      * @return successful?
      */
-    public boolean trySetConnectionReceiving(Socket connectionReceiving) {
+    public synchronized boolean trySetConnectionReceiving(Socket connectionReceiving) {
         if(this.connectionReceiving == null) {
             this.connectionReceiving = connectionReceiving;
-            notify();
+            synchronizedNotify();
             return true;
         } else {
             return false;
@@ -80,13 +78,29 @@ public class Stream extends Thread {
      * Attempts to assign sending connection - only allowed if value was previously null
      * @return successful?
      */
-    public boolean trySetConnectionSending(Socket connectionSending) {
+    public synchronized boolean trySetConnectionSending(Socket connectionSending) {
         if(this.connectionSending == null) {
             this.connectionSending = connectionSending;
-            notify();
+            synchronizedNotify();
             return true;
         } else {
             return false;
+        }
+    }
+
+    public synchronized void synchronizedWait() {
+        try {
+            wait();
+        }
+        catch (InterruptedException ignored) {}
+        catch (Throwable t) { t.printStackTrace(); }
+    }
+
+    public synchronized void synchronizedNotify() {
+        try {
+            notify();
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 
