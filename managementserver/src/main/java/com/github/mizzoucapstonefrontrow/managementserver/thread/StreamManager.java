@@ -6,12 +6,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class StreamManager extends Thread {
 
@@ -21,9 +21,9 @@ public class StreamManager extends Thread {
         USER_ENVIRONMENT("User Environment", Stream::trySetConnectionSending);
 
         String friendlyName;
-        BiConsumer<Stream, Socket> connectionAdditionFunction;
+        Stream.ConnectionAdditionFunction connectionAdditionFunction;
 
-        StreamSide(String friendlyName, BiConsumer<Stream, Socket> connectionAdditionFunction) {
+        StreamSide(String friendlyName, Stream.ConnectionAdditionFunction connectionAdditionFunction) {
             this.friendlyName = friendlyName;
             this.connectionAdditionFunction = connectionAdditionFunction;
         }
@@ -83,15 +83,26 @@ public class StreamManager extends Thread {
         // Connection Acceptance Loop
         while(!serverSocket.isClosed()) {
             try {
+
                 connection = serverSocket.accept();
-                try (BufferedReader connectionReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader connectionReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                // Debug Print
+                Console.format("Received Connection to Stream Manager from side \"%s\".", side);
+
+                try {
 
                     // Parse JSON
                     JsonObject message = Server.json.fromJson(connectionReader.readLine(), JsonObject.class);
-                    if (!message.get("message_type").getAsString().equals("stream_descriptor"))
+                    if (!message.get("message_type").getAsString().equals("stream_descriptor")) {
                         throw new JsonParseException("Invalid \"message_type\" - Expected \"stream_descriptor\"");
+                    }
                     String machineName = message.get("machine").getAsString();
                     String streamName = message.get("stream").getAsString();
+
+                    // Debug Print
+                    Console.format("Receiving Stream Descriptor from side \"%s\". Machine = \"%s\", Stream = \"%s\".", side, machineName, streamName);
 
                     // Fetch or Create Stream
                     HashMap<String, Stream> streamsForMachine = Stream.streams.computeIfAbsent(machineName, k -> new HashMap<>());
@@ -104,7 +115,7 @@ public class StreamManager extends Thread {
                     }
 
                     // Add Connection to Stream
-                    side.connectionAdditionFunction.accept(stream, connection);
+                    side.connectionAdditionFunction.setConnection(stream, connection, inputStream);
                     stream.synchronizedNotify();
 
                 } catch (Throwable t) {
